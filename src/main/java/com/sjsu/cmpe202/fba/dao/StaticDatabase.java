@@ -3,6 +3,7 @@ package com.sjsu.cmpe202.fba.dao;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sjsu.cmpe202.fba.pojos.BookingRequest;
@@ -13,15 +14,16 @@ public class StaticDatabase {
 	private static List<FlightDetails> flightData;
 	private static List<BookingRequest> bookingRequests;
 
-	private StaticDatabase() {}
-	
+	private StaticDatabase() {
+	}
+
 	public static List<FlightDetails> getFlightData() {
 		if (flightData == null) {
 			flightData = createFlightData();
 		}
 		return flightData;
 	}
-	
+
 	public static List<BookingRequest> getBookingRequests() {
 		if (bookingRequests == null) {
 			bookingRequests = createBookingData();
@@ -31,8 +33,11 @@ public class StaticDatabase {
 
 	public static List<FlightDetails> createFlightData() {
 
+		System.out.println("IN CREATE DATA");
+		List<FlightDetails> fd = null;
 		String line = "";
 		try {
+			fd = new ArrayList<FlightDetails>();
 			BufferedReader br = new BufferedReader(new FileReader("flights.csv"));
 			int i = 0;
 			while ((line = br.readLine()) != null) {
@@ -43,7 +48,10 @@ public class StaticDatabase {
 					String[] rowValues = line.split(",");
 					FlightDetails flightDetail = new FlightDetails(rowValues[0], rowValues[1],
 							Integer.parseInt(rowValues[2]), Integer.parseInt(rowValues[3]), rowValues[4], rowValues[5]);
-					flightData.add(flightDetail);
+					fd.add(flightDetail);
+
+					System.out.println(flightDetail.hashCode());
+
 				}
 			}
 			br.close();
@@ -51,13 +59,16 @@ public class StaticDatabase {
 			e.printStackTrace();
 		}
 
-		return flightData;
+		flightData = fd;
+		return fd;
 	}
 
 	public static List<BookingRequest> createBookingData() {
 
+		List<BookingRequest> bR = null;
 		String line = "";
 		try {
+			bR = new ArrayList<BookingRequest>();
 			BufferedReader br = new BufferedReader(new FileReader("Sample.csv"));
 			int i = 0;
 			while ((line = br.readLine()) != null) {
@@ -68,24 +79,31 @@ public class StaticDatabase {
 					String[] rowValues = line.split(",");
 					BookingRequest bookingDetail = new BookingRequest(rowValues[0], rowValues[1], rowValues[2],
 							Integer.parseInt(rowValues[3]), Long.parseLong(rowValues[4]));
-					bookingRequests.add(bookingDetail);
+					bR.add(bookingDetail);
 				}
 			}
 			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		return bookingRequests;
+
+		bookingRequests = bR;
+		return bR;
 	}
-	
-	
-	public boolean updateSeatsAvbl() {
-		
-		boolean isUpdateSuceesful = false;
-		
-		
-		return isUpdateSuceesful;
+
+	public static boolean updateSeatsAvbl(int objHash, int newSeatCount) {
+		// objHash is the hashcode of the FlightDetails in the FlightData database
+		// (List<FlightDetails>); and will act as the unique identifier
+		boolean isUpdateSucessful = false;
+
+		for (FlightDetails flightDetail : flightData) {
+			if (flightDetail.hashCode() == objHash) {
+				flightDetail.setAvblSeats(newSeatCount);
+				System.out.println("Flight seatcount for flight" + flightDetail.getFlightNum() + " updated");
+			}
+		}
+
+		return isUpdateSucessful;
 	}
 
 }
