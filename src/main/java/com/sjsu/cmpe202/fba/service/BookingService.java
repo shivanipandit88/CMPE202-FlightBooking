@@ -38,7 +38,11 @@ public class BookingService {
 	public boolean bookFlight() throws Exception {
 		
 		boolean isBookingSuccessful = false;
+<<<<<<< HEAD
 		FileWriter myWriter = new FileWriter(outputTxtFilePath);
+=======
+		FileWriter myWriter = new FileWriter("Output.txt");
+>>>>>>> 7c6fad25dbd192a6594cb312bbd99457b58029c8
 		
 		try {
 			StaticDatabase.setInputFilePaths(inputDataFilePath, flightDetailsFilePath);
@@ -75,6 +79,7 @@ public class BookingService {
 								    System.out.println("Successfully wrote to the file. 1");
 								      
 									throw new InvalidCardException("Card number invalid");
+							
 								}
 								
 							} else {

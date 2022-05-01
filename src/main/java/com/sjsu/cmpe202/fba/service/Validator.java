@@ -18,6 +18,7 @@ public class Validator {
 				matchingFlights.add(fd);
 			}
 		}
+<<<<<<< HEAD
 		return matchingFlights;
 	}
 
@@ -28,6 +29,16 @@ public class Validator {
 			if (fd.getCategory().equals(categoryToBook)) {
 				matchingFlight = fd;
 			}
+=======
+		return flightDetail;
+	}
+
+	public boolean validateCategory(String categoryToBook, FlightDetails flightData) {
+		boolean doesCategoryMatch = false;
+		
+		if (categoryToBook.equals(flightData.getCategory())) {
+			doesCategoryMatch = true;
+>>>>>>> 7c6fad25dbd192a6594cb312bbd99457b58029c8
 		}
 		
 		return matchingFlight;
