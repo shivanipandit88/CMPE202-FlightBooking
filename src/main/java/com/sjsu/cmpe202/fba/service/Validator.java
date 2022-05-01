@@ -15,13 +15,12 @@ public class Validator {
 				break;
 			}
 		}
-
 		return flightDetail;
 	}
 
 	public boolean validateCategory(String categoryToBook, FlightDetails flightData) {
 		boolean doesCategoryMatch = false;
-
+		
 		if (categoryToBook.equals(flightData.getCategory())) {
 			doesCategoryMatch = true;
 		}

@@ -1,5 +1,6 @@
 package com.sjsu.cmpe202.fba.service;
 
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class BookingService {
 	public boolean bookFlight() throws Exception {
 		
 		boolean isBookingSuccessful = false;
+		FileWriter myWriter = new FileWriter("Output.txt");
 		
 		try {
 			List<BookingRequest> bookingRequests = StaticDatabase.getBookingRequests();
@@ -59,18 +61,31 @@ public class BookingService {
 									
 									
 								} else {
+									myWriter.write("Please enter correct booking details for " + bookingRequest.getBookingName() + ": invalid card number \n");
+								    System.out.println("Successfully wrote to the file. 1");
+								      
 									throw new InvalidCardException("Card number invalid");
+							
 								}
 								
 								
 								
 							} else {
+								myWriter.write("Please enter correct booking details for " + bookingRequest.getBookingName() + ": invalid  seat count \n");
+							    System.out.println("Successfully wrote to the file. 2");
+							    
 								throw new SeatsNotAvailableException("Flight " + bookingRequest.getFlightNum() + " does not contain required number of seats");
 							}
 						} else {
+							myWriter.write("Please enter correct booking details for " + bookingRequest.getBookingName() + ": invalid category \n");
+						    System.out.println("Successfully wrote to the file. 4");
+						    
 							throw new SeatCategoryIncorrectException("Flight " + bookingRequest.getFlightNum() + " does not have the requested seat category type");
 						}
 					} else {
+						myWriter.write("Please enter correct booking details for " + bookingRequest.getBookingName() + ": invalid flight number \n");
+					    System.out.println("Successfully wrote to the file. 3");
+					    
 						throw new FlightDoesNotExistException("Flight " + bookingRequest.getFlightNum() + " does not exist");
 					}
 					
@@ -81,6 +96,7 @@ public class BookingService {
 				i++;
 			}
 			System.out.println("FOR Done");
+			myWriter.close();
 			
 			
 			if (sucessfulBookings != null) {

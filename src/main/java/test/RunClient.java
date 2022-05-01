@@ -11,7 +11,12 @@ public class RunClient {
 
 	// remove throws
 	public static void main(String[] args) throws Exception {
-		BookingService bookingService = new BookingService();
+		
+		System.out.println(args[0]);
+		System.out.println(args[1]);
+		System.out.println(args[2]);
+		System.out.println(args[3]);
+		BookingService bookingService = new BookingService(args[0], args[1], args[2], args[3]);
 		bookingService.bookFlight();
-	}
+	} //Sample.csv flights.csv Output.csv Output.txt
 }
