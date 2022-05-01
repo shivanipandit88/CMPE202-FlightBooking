@@ -1,25 +1,7 @@
-singlton = done
+singleton = done
+iterator = done
 
 todo
 -----
-iterator
-check how to print errors in output.txt
-
-
-BookingValidation
-- totlalPriceCalc
-cardValidation
-
-modifyAvblSeats
-
-
-
-BookingPojo
-BokingCsvGeneration
-
-
-
-
+check for different filepath arguments 
 check if LinkedList or ArrayList
-
-loggers

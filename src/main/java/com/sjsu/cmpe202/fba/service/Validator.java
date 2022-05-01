@@ -1,32 +1,36 @@
 package com.sjsu.cmpe202.fba.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sjsu.cmpe202.fba.pojos.FlightDetails;
 
 public class Validator {
 
-	public FlightDetails validateFlightNo(String flightNum, List<FlightDetails> flightData) {
-		FlightDetails flightDetail = null;
+	public List<FlightDetails> validateFlightNo(String flightNum, List<FlightDetails> flightData) {
+		List<FlightDetails> matchingFlights = null;
 
 		for (FlightDetails fd : flightData) {
 			if (fd.getFlightNum().equals(flightNum)) {
-				flightDetail = fd;
-				break;
+				if (matchingFlights == null) {
+					matchingFlights = new ArrayList<FlightDetails>();
+				} 
+				matchingFlights.add(fd);
 			}
 		}
-
-		return flightDetail;
+		return matchingFlights;
 	}
 
-	public boolean validateCategory(String categoryToBook, FlightDetails flightData) {
-		boolean doesCategoryMatch = false;
-
-		if (categoryToBook.equals(flightData.getCategory())) {
-			doesCategoryMatch = true;
+	public FlightDetails validateCategory(String categoryToBook, List<FlightDetails> flightData) {
+		FlightDetails matchingFlight = null;
+		
+		for (FlightDetails fd : flightData) {
+			if (fd.getCategory().equals(categoryToBook)) {
+				matchingFlight = fd;
+			}
 		}
-
-		return doesCategoryMatch;
+		
+		return matchingFlight;
 	}
 
 	public boolean validateSeatCount(int seatCount, FlightDetails flightData) {

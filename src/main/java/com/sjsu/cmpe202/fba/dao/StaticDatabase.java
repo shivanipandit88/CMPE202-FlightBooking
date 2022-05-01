@@ -1,11 +1,12 @@
 package com.sjsu.cmpe202.fba.dao;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
+import com.sjsu.cmpe202.fba.adapter.csvToPojoList.CSVFileType;
+import com.sjsu.cmpe202.fba.adapter.csvToPojoList.CSVReader;
+import com.sjsu.cmpe202.fba.adapter.csvToPojoList.CSVToPojoListAdapter;
+import com.sjsu.cmpe202.fba.adapter.csvToPojoList.CSVToPojoListAdapterImpl;
+import com.sjsu.cmpe202.fba.errors.UnknownInputFileException;
 import com.sjsu.cmpe202.fba.pojos.BookingRequest;
 import com.sjsu.cmpe202.fba.pojos.FlightDetails;
 
@@ -13,82 +14,42 @@ public class StaticDatabase {
 
 	private static List<FlightDetails> flightData;
 	private static List<BookingRequest> bookingRequests;
+	private static CSVToPojoListAdapter adapter;
+	
+	private static String flightDataFilePath;
+	private static String inputDataFilePath;
 
 	private StaticDatabase() {
 	}
+	
+	public static void setInputFilePaths(String inputFile, String flightFile) {
+		inputDataFilePath = inputFile;
+		flightDataFilePath = flightFile;
+		adapter = new CSVToPojoListAdapterImpl();
+	}
 
-	public static List<FlightDetails> getFlightData() {
+	public static List<FlightDetails> getFlightData() throws UnknownInputFileException {
 		if (flightData == null) {
-			flightData = createFlightData();
+			initializeFlightData();
 		}
 		return flightData;
 	}
 
-	public static List<BookingRequest> getBookingRequests() {
+	public static List<BookingRequest> getBookingRequests() throws UnknownInputFileException {
 		if (bookingRequests == null) {
-			bookingRequests = createBookingData();
+			initializeBookingData();
 		}
 		return bookingRequests;
 	}
 
-	public static List<FlightDetails> createFlightData() {
-
-		System.out.println("IN CREATE DATA");
-		List<FlightDetails> fd = null;
-		String line = "";
-		try {
-			fd = new ArrayList<FlightDetails>();
-			BufferedReader br = new BufferedReader(new FileReader("flights.csv"));
-			int i = 0;
-			while ((line = br.readLine()) != null) {
-				i++;
-				if (i == 1) {
-					continue;
-				} else {
-					String[] rowValues = line.split(",");
-					FlightDetails flightDetail = new FlightDetails(rowValues[0], rowValues[1],
-							Integer.parseInt(rowValues[2]), Integer.parseInt(rowValues[3]), rowValues[4], rowValues[5]);
-					fd.add(flightDetail);
-
-					System.out.println(flightDetail.hashCode());
-
-				}
-			}
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		flightData = fd;
-		return fd;
+	@SuppressWarnings("unchecked")
+	private static void initializeFlightData() throws UnknownInputFileException {
+		flightData = (List<FlightDetails>) adapter.getPojoList(CSVReader.readCSV(flightDataFilePath), CSVFileType.FLIGHT_DETAILS_CSV);
 	}
 
-	public static List<BookingRequest> createBookingData() {
-
-		List<BookingRequest> bR = null;
-		String line = "";
-		try {
-			bR = new ArrayList<BookingRequest>();
-			BufferedReader br = new BufferedReader(new FileReader("Sample.csv"));
-			int i = 0;
-			while ((line = br.readLine()) != null) {
-				i++;
-				if (i == 1) {
-					continue;
-				} else {
-					String[] rowValues = line.split(",");
-					BookingRequest bookingDetail = new BookingRequest(rowValues[0], rowValues[1], rowValues[2],
-							Integer.parseInt(rowValues[3]), Long.parseLong(rowValues[4]));
-					bR.add(bookingDetail);
-				}
-			}
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		bookingRequests = bR;
-		return bR;
+	@SuppressWarnings("unchecked")
+	public static void initializeBookingData() throws UnknownInputFileException {
+		bookingRequests = (List<BookingRequest>) adapter.getPojoList(CSVReader.readCSV(inputDataFilePath), CSVFileType.BOOKING_REQUESTS_CSV);
 	}
 
 	public static boolean updateSeatsAvbl(int objHash, int newSeatCount) {
